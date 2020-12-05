@@ -1,4 +1,7 @@
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 
 
 def layout_fig(graph, mod=None):
@@ -11,7 +14,7 @@ def layout_fig(graph, mod=None):
     :param mod: sets the number of figures per row
     :type mod: int (, optional)
     :return: fig:
-                handel to figure being created
+                handle to figure being created
              axes:
                 numpy array of axes that are created
     :rtype: fig:
@@ -46,7 +49,7 @@ def layout_fig(graph, mod=None):
         if i + 1 > graph:
             fig.delaxes(axes[i])
 
-    return (fig, axes)
+    return fig, axes
 
 
 def embedding_maps(data, image, colorbar_shown=True,
@@ -67,7 +70,7 @@ def embedding_maps(data, image, colorbar_shown=True,
     :type mod: int
     :param title: set the title of figure
     :type title: string
-    :return: handel to figure being created
+    :return: handle to figure being created
     :rtype: matplotlib figure
     """
     fig, ax = layout_fig(data.shape[1], mod)
@@ -79,7 +82,7 @@ def embedding_maps(data, image, colorbar_shown=True,
             ax.set_yticklabels('')
 
             # adds the colorbar
-            if colorbar_shown == True:
+            if colorbar_shown is True:
                 divider = make_axes_locatable(ax)
                 cax = divider.append_axes('right', size='10%', pad=0.05)
                 cbar = plt.colorbar(im, cax=cax, format='%.1e')
