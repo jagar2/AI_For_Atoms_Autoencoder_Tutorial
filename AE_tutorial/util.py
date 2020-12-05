@@ -1,4 +1,9 @@
 import numpy as np
+import torch
+
+def non_linear_fn(t, x, y, z):
+  # returns a function from variables
+  return tanh(torch.tensor(20*(t - 2*(x-.5)))) + selu(torch.tensor((t-2*(y-0.5)))) + sigmoid(torch.tensor(-20*(t-(z-0.5))))
 
 def generate_data(values, function=non_linear_fn, length=25, range_=[-1, 1]):
     """
