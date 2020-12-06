@@ -184,4 +184,4 @@ def Train(model, encoder, decoder, train_iterator, optimizer,
                 'decoder': decoder.state_dict()
             }
             if epoch >= 0:
-                torch.save(checkpoint, f'/test__Train Loss:{train_loss:.4f}-{epoch}.pkl') 
+                torch.save(checkpoint, f'/test__Train Loss:{train_loss:.4f}-{epoch}.pkl')
