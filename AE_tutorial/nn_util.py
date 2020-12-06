@@ -6,6 +6,7 @@ import tensorflow as tf
 import torch
 from tqdm import tqdm
 
+device = 'cuda'
 
 class Regularization(nn.Module):
     def __init__(self, model, weight_decay, p=2):
