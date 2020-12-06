@@ -4,6 +4,7 @@ import torch.autograd as autograd
 import torch.optim as optim
 import tensorflow as tf
 import torch
+from tqdm import tqdm
 
 
 class Regularization(nn.Module):
