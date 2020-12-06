@@ -1,5 +1,10 @@
 import numpy as np
 import torch
+import torch.nn as nn
+
+tanh = nn.Tanh()
+selu = nn.SELU()
+sigmoid = nn.Sigmoid()
 
 def non_linear_fn(t, x, y, z):
   # returns a function from variables
