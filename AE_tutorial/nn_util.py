@@ -119,7 +119,6 @@ def loss_function(model,
         optimizer.zero_grad()
 
         if beta is None:
-
             embedding = encoder(x)
 
         else:
@@ -187,3 +186,22 @@ def Train(model, encoder, decoder, train_iterator, optimizer,
             }
             if epoch >= 0:
                 torch.save(checkpoint, f'/test__Train Loss:{train_loss:.4f}-{epoch}.pkl')
+
+def transform_nn(data, encoder, decoder):
+  try:
+      encoded_spectra = encoder(torch.tensor(np.atleast_3d(data),dtype=torch.float32).to(device))
+  except:
+      pass
+
+  try:
+      encoded_spectra = encoder(torch.tensor(dog_data,dtype=torch.float32).to(device))
+  except:
+      pass
+
+  decoded_spectra = decoder(encoded_spectra)
+
+  encoded_spectra = encoded_spectra.to('cpu')
+  encoded_spectra = encoded_spectra.detach().numpy()
+  decoded_spectra = decoded_spectra.to('cpu')
+  decoded_spectra = decoded_spectra.detach().numpy()
+  return encoded_spectra, decoded_spectra
