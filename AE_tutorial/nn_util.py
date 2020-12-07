@@ -194,7 +194,7 @@ def transform_nn(data, encoder, decoder):
       pass
 
   try:
-      encoded_spectra = encoder(torch.tensor(dog_data,dtype=torch.float32).to(device))
+      encoded_spectra = encoder(torch.tensor(data,dtype=torch.float32).to(device))
   except:
       pass
 
