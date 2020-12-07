@@ -6,8 +6,6 @@ import torch
 
 
 
-
-
 def layout_fig(graph, mod=None):
 
     """
@@ -182,7 +180,8 @@ def latent_generator(model,
                      indx=None,
                      ranges=None,
                      x_values=None,
-                     y_scale=[-2.2, 4]):
+                     y_scale=[-2.2, 4],
+                     device = 'cuda'):
     """
     plots the generator results
 
