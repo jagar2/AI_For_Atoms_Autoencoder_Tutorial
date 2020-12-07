@@ -97,3 +97,169 @@ def embedding_maps(data, image, colorbar_shown=True,
                      y=1, horizontalalignment='center')
 
     fig.tight_layout()
+
+
+def imagemap(ax, data, colorbars=True, clim=None):
+    """
+    Plots an image map
+
+    Parameters
+    ----------
+    axis : matplotlib, object
+        axis which is plotted
+    data  : numpy, float
+        data to plot
+    clim  : numpy, float, optional
+        sets the climit for the image
+    color_bar  : bool, optional
+        selects to plot the colorbar bar for the image
+    """
+    if data.ndim == 1:
+        data = data.reshape(np.sqrt(data.shape[0]).astype(
+            int), np.sqrt(data.shape[0]).astype(int))
+
+    cmap = plt.get_cmap('viridis')
+
+    if clim is None:
+        im = ax.imshow(data, cmap=cmap)
+    else:
+        im = ax.imshow(data, clim=clim, cmap=cmap)
+
+    ax.set_yticklabels('')
+    ax.set_xticklabels('')
+
+    if colorbars:
+        # adds the colorbar
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='10%', pad=0.05)
+        cbar = plt.colorbar(im, cax=cax, format='%.1e')
+
+
+def find_nearest(array, value, averaging_number):
+    """
+    returns the indices nearest to a value in an image
+    Parameters
+    ----------
+    array : float, array
+        image to find the index closest to a value
+    value : float
+        value to find points near
+    averaging_number : int
+        number of points to find
+    """
+    idx = (np.abs(array - value)).argsort()[0:averaging_number]
+    return idx
+
+
+def make_folder(folder, **kwargs):
+    """
+    Function that makes new folders
+    Parameters
+    ----------'
+    folder : string
+        folder where to save
+    Returns
+    -------
+    folder : string
+        folder where to save
+    """
+
+    # Makes folder
+    os.makedirs(folder, exist_ok=True)
+
+    return (folder)
+
+
+def latent_generator(model,
+                     embeddings,
+                     image,
+                     number,
+                     average_number,
+                     indx=None,
+                     ranges=None,
+                     x_values=None,
+                     y_scale=[-2.2, 4]):
+    """
+    plots the generator results
+
+    Parameters
+    ----------
+    model : tensorflow object
+        neural network model
+    encode : float, array
+        the input embedding (or output from encoder)
+    voltage : float, array
+        voltage array
+    number : int
+        number of divisions to plot
+    averaging_number : int
+        number of points to consider in the average
+    ranges : float, array
+        sets the ranges for the embeddings
+    folder : string
+        set the folder where to export the images
+    plot_format  : dict
+        sets the plot format for the images
+    printing : dictionary
+        contains information for printing
+        'dpi': int
+            resolution of exported image
+        print_EPS : bool
+            selects if export the EPS
+        print_PNG : bool
+            selects if print the PNG
+    graph_layout : int, array (optional)
+        sets the layout for the figure.
+
+    """
+
+    # sets the colormap
+    cmap = plt.cm.viridis
+
+    if indx is None:
+        embedding_small = embeddings.squeeze()
+    else:
+        embedding_small = embeddings[:, indx].squeeze()
+
+    # creates the figures and axes in a pretty way
+    fig, ax = layout_fig(embedding_small.shape[1] * 2, mod=3)
+
+    # plots all of the embedding maps
+    for i in range(embedding_small.shape[1]):
+        im = imagemap(ax[i], embedding_small[:, i].reshape(image.shape[0], image.shape[1]))
+
+    # loops around the number of example loops
+    for i in range(number):
+
+        # loops around the number of embeddings from the range file
+        for j in range(embedding_small.shape[1]):
+
+            if ranges is None:
+                value = np.linspace(np.min(embedding_small[:, j]),
+                                    np.max(embedding_small[:, j]), number)
+            else:
+                # sets the linear spaced values
+                value = np.linspace(0, ranges[j], number)
+
+            idx = find_nearest(
+                embedding_small[:, j], value[i], average_number)
+            gen_value = np.mean(embeddings[idx], axis=0)
+            gen_value[j] = value[i]
+
+            # computes the generated results
+            gen_value_1 = torch.from_numpy(np.atleast_2d(gen_value)).to(device)
+            generated = model(gen_value_1)
+            generated = generated.to('cpu')
+            generated = generated.detach().numpy().squeeze()
+
+            # plots and formats the graphs
+            if x_values is None:
+                ax[j + embedding_small.shape[1]
+                   ].plot(generated, color=cmap((i + 1) / number))
+            else:
+                ax[j + embedding_small.shape[1]
+                   ].plot(x_values, generated, color=cmap((i + 1) / number))
+
+            ax[j + embedding_small.shape[1]].set_ylim(y_scale)
+            ax[j + embedding_small.shape[1]].set_yticklabels('')
+            plt.tight_layout(pad=1)
