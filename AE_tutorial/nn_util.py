@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 device = 'cuda'
 
+
 class Regularization(nn.Module):
     def __init__(self, model, weight_decay, p=2):
         '''
@@ -160,8 +161,6 @@ def loss_function(model,
 
 def Train(model, encoder, decoder, train_iterator, optimizer,
           epochs, coef=0, coef_1=0, ln_parm=1, beta=None):
-
-
     N_EPOCHS = epochs
     best_train_loss = float('inf')
 
@@ -187,22 +186,24 @@ def Train(model, encoder, decoder, train_iterator, optimizer,
             if epoch >= 0:
                 torch.save(checkpoint, f'/test__Train Loss:{train_loss:.4f}-{epoch}.pkl')
 
+
 def transform_nn(data, encoder, decoder):
-  try:
-      encoded_spectra = encoder(torch.tensor(np.atleast_3d(data),dtype=torch.float32).to(device))
-  except:
-      print('b')
-      pass
+    try:
+        encoded_spectra = encoder(torch.tensor(np.atleast_3d(data), dtype=torch.float32).to(device))
+    except:
+        print('b')
+        pass
 
-  try:
-      encoded_spectra = encoder(torch.tensor(data,dtype=torch.float32).to(device))
-  except:
-      pass
+    try:
+        encoded_spectra = encoder(torch.tensor(data, dtype=torch.float32).to(device))
+    except:
+        print('a')
+        pass
 
-  decoded_spectra = decoder(encoded_spectra)
+    decoded_spectra = decoder(encoded_spectra)
 
-  encoded_spectra = encoded_spectra.to('cpu')
-  encoded_spectra = encoded_spectra.detach().numpy()
-  decoded_spectra = decoded_spectra.to('cpu')
-  decoded_spectra = decoded_spectra.detach().numpy()
-  return encoded_spectra, decoded_spectra
+    encoded_spectra = encoded_spectra.to('cpu')
+    encoded_spectra = encoded_spectra.detach().numpy()
+    decoded_spectra = decoded_spectra.to('cpu')
+    decoded_spectra = decoded_spectra.detach().numpy()
+    return encoded_spectra, decoded_spectra
