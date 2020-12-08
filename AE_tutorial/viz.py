@@ -264,5 +264,5 @@ def latent_generator(model,
                    ].plot(x_values, generated, color=cmap((i + 1) / number))
 
             ax[j + embedding_small.shape[1]].set_ylim(y_scale)
-            ax[j + embedding_small.shape[1]].set_yticklabels('')
+            #ax[j + embedding_small.shape[1]].set_yticklabels('')
             plt.tight_layout(pad=1)
