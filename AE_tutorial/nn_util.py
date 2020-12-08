@@ -173,7 +173,7 @@ def Train(model, encoder, decoder, train_iterator, optimizer,
     for epoch in range(N_EPOCHS):
 
         train = loss_function(model, encoder, decoder, train_iterator,
-                              optimizer, coef, coef_1, ln_parm, beta,
+                              optimizer, coef, coef_1, ln_parm, beta, mse)
 
         train_loss = train
         train_loss /= len(train_iterator)
