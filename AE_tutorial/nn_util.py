@@ -5,6 +5,7 @@ import torch.optim as optim
 import tensorflow as tf
 import torch
 from tqdm import tqdm
+import numpy as np
 
 device = 'cuda'
 
@@ -191,13 +192,11 @@ def transform_nn(data, encoder, decoder):
     try:
         encoded_spectra = encoder(torch.tensor(np.atleast_3d(data), dtype=torch.float32).to(device))
     except:
-        print('b')
         pass
 
     try:
         encoded_spectra = encoder(torch.tensor(data, dtype=torch.float32).to(device))
     except:
-        print('a')
         pass
 
     decoded_spectra = decoder(encoded_spectra)
