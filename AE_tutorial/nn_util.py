@@ -191,6 +191,7 @@ def transform_nn(data, encoder, decoder):
   try:
       encoded_spectra = encoder(torch.tensor(np.atleast_3d(data),dtype=torch.float32).to(device))
   except:
+      print('b')
       pass
 
   try:
