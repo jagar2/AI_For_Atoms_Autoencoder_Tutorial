@@ -85,7 +85,8 @@ def loss_function(model,
                   coef=0,
                   coef1=0,
                   ln_parm=1,
-                  beta=None):
+                  beta=None,
+                  mse = True):
     '''
 
     :param model:
@@ -136,10 +137,14 @@ def loss_function(model,
 
         predicted_x = decoder(embedding)
 
-        # reconstruction loss
-        loss = F.mse_loss(x, predicted_x, reduction='mean')
+        if mse:
+            # reconstruction loss
+            loss = F.mse_loss(x, predicted_x, reduction='mean')
+        else:
+            # reconstruction loss
+            loss = F.mse_loss(x, predicted_x, reduction='mean')
 
-        loss = loss + reg_loss_2(model) + reg_loss_1
+            loss = loss + reg_loss_2(model) + reg_loss_1
 
         # beta VAE
         if beta is not None:
@@ -161,14 +166,15 @@ def loss_function(model,
 
 
 def Train(model, encoder, decoder, train_iterator, optimizer,
-          epochs, coef=0, coef_1=0, ln_parm=1, beta=None):
+          epochs, coef=0, coef_1=0, ln_parm=1, beta=None, mse = True):
     N_EPOCHS = epochs
     best_train_loss = float('inf')
 
     for epoch in range(N_EPOCHS):
 
         train = loss_function(model, encoder, decoder, train_iterator,
-                              optimizer, coef, coef_1, ln_parm, beta)
+                              optimizer, coef, coef_1, ln_parm, beta,
+
         train_loss = train
         train_loss /= len(train_iterator)
         print(f'Epoch {epoch}, Train Loss: {train_loss:.4f}')
